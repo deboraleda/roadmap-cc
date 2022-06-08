@@ -13,6 +13,7 @@ export const Routes = ({
             <Route path="/" component={App} exact/>
             <Route path="/infra" component={AppTrilhas.AppTrilhaInfra} exact/>
             <Route path="/dados" component={AppTrilhas.AppTrilhaDados} exact/>
+            <Route path="/web" component={AppTrilhas.AppTrilhaDevWeb} exact/>
             <Route component={Page404} />
         </Switch>
     )

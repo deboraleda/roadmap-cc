@@ -1,6 +1,7 @@
 import React from 'react';
 import TrilhaInfra from './Components/TrilhaInfra/Trilha-infra'
 import TrilhaDados from './Components/TrilhaDados/Trilha-dados'
+import TrilhaDevWeb from './Components/TrilhaDevWeb/Trilha-dev-web'
 
 
 function AppTrilhaInfra() {
@@ -20,4 +21,12 @@ function AppTrilhaDados() {
   );
 }
 
-export default {AppTrilhaInfra, AppTrilhaDados};
+function AppTrilhaDevWeb(){
+  return ( 
+    <>
+    <TrilhaDevWeb/>
+    </>
+  );
+}
+
+export default {AppTrilhaInfra, AppTrilhaDados, AppTrilhaDevWeb};

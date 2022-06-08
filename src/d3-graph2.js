@@ -6,7 +6,7 @@ class GraphD3v2{
         this.layoutConfig = layoutConfig
         this.levelRadius = this.layoutConfig['levelRadius'] || 115
         this.forceCollide = this.layoutConfig['forceCollide'] || 60
-        this.size = 1000
+        this.size = 1200
         this.margin = 50
         this.rectWidht = 100
         this.rectHeight = 50
@@ -85,10 +85,13 @@ class GraphD3v2{
     _setNodesLevel(){
         this.data.forEach((d, i) => {
             
-            d.level = d.parents.length ?
-              this.data.find(function(p) {
+            if(!d.level){
+
+                d.level = d.parents.length ?
+                this.data.find(function(p) {
                 return p.child === d.parents[0]
-              }).level + 1 : 0
+                }).level + 1 : 0
+            }
           
             // Desired y level, otherwise try for sensible defaults
             d.dy = d.y = d.level * this.levelRadius * 2
@@ -116,20 +119,21 @@ class GraphD3v2{
     }
 
     drawLinks(){
-        let linkPath = d3.linkVertical()
-                    .source((d) => {
-                        return [d.source.x, d.source.dy + this.rectHeight];
-                    })
-                    .target( (d) => {
-                        let xDistance = d.target.x - d.source.x
-                        // Quando o nó está diretamente a frente do outro
-                        // a posição X do filho deve ser exatamente a psição X do pai
-                        // a linha abaixo define que se o nó filho está alinhado com o nó pai, então o alinhamento deve ser exato
-                        // o valor 10 é completamente experimental
-                        let nodePosition = (xDistance >  0 && xDistance <=  10) ? [d.source.x, d.target.dy - (this.rectWidht / 1.4)] : [d.target.x, d.target.dy - (this.rectWidht / 1.4)]
-                        return nodePosition;
-                    });
+        // let linkPath = d3.linkVertical()
+        //             .source((d) => {
+        //                 return [d.source.x, d.source.dy + this.rectHeight];
+        //             })
+        //             .target( (d) => {
+        //                 let xDistance = d.target.x - d.source.x
+        //                 // Quando o nó está diretamente a frente do outro
+        //                 // a posição X do filho deve ser exatamente a psição X do pai
+        //                 // a linha abaixo define que se o nó filho está alinhado com o nó pai, então o alinhamento deve ser exato
+        //                 // o valor 10 é completamente experimental
+        //                 let nodePosition = (xDistance >  0 && xDistance <=  10) ? [d.source.x, d.target.dy - (this.rectWidht / 1.4)] : [d.target.x, d.target.dy - (this.rectWidht / 1.4)]
+        //                 return nodePosition;
+        //             });
 
+   
         let link = this.svg.append("g").selectAll("path")
         .data(this.links)
         .enter()
@@ -137,7 +141,26 @@ class GraphD3v2{
         .attr('marker-end', `url(#start-arrow)`)
         .attr('stroke', "gray")
         .attr('fill', 'none')
-        .attr("d", linkPath);
+        .attr("d", (d) => {
+            return (
+              "M" +
+              d.source.x +
+              "," +
+              (d.source.dy + this.rectHeight) +
+              " L " +
+              (d.source.x) +
+              "," +(d.source.dy + d.target.dy) / 2 +
+              //(((d.source.dy + d.target.dy) / 2) > 115  ? 115 : (d.source.dy + d.target.dy) / 2) +
+              "L" +
+              d.target.x +
+              "," +
+              (d.source.dy + d.target.dy) / 2 +
+              "L" +
+              d.target.x +
+              "," +
+              (d.target.dy - (this.rectWidht / 1.4))
+            );
+          });
     }
 
     drawNodes(){
